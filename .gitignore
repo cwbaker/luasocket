@@ -14,3 +14,5 @@ Release
 *.suo
 x64
 
+*.vcproj
+*.vcxproj
