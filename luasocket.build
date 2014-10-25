@@ -1,0 +1,40 @@
+
+Library "socket" {
+    settings = build.switch {
+        operating_system();
+        windows = {
+            defines = {
+                "WINVER=0x0501",
+                "LUASOCKET_INET_PTON"
+            };
+        };
+    };
+
+    Cc {
+        "src/luasocket.c",
+        "src/timeout.c",
+        "src/buffer.c",
+        "src/io.c",
+        "src/auxiliar.c",
+        "src/options.c",
+        "src/inet.c",
+        "src/except.c",
+        "src/select.c",
+        "src/tcp.c",
+        "src/udp.c",
+    };
+
+    Cc {
+        settings = {
+            platforms = { "android", "ios", "clang" };
+        };
+        "src/usocket.c",
+    };
+
+    Cc {
+        settings = {
+            platforms = { "mingw", "msvc" };
+        };
+        "src/wsocket.c",
+    };
+}
