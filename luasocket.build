@@ -1,6 +1,6 @@
 
-Library "socket" {
-    settings = build.switch {
+local settings = build.push_settings( 
+    build.switch {
         operating_system();
         windows = {
             defines = {
@@ -8,33 +8,41 @@ Library "socket" {
                 "LUASOCKET_INET_PTON"
             };
         };
-    };
+    }
+);
 
-    Cc {
-        "src/luasocket.c",
-        "src/timeout.c",
-        "src/buffer.c",
-        "src/io.c",
-        "src/auxiliar.c",
-        "src/options.c",
-        "src/inet.c",
-        "src/except.c",
-        "src/select.c",
-        "src/tcp.c",
-        "src/udp.c",
-    };
-
-    Cc {
-        settings = {
-            platforms = { "android", "ios", "ios_simulator", "clang" };
+for _, architecture in ipairs(settings.architectures) do
+    local socket = Library ("socket", architecture) {
+        Cc (architecture) {
+            "src/luasocket.c",
+            "src/timeout.c",
+            "src/buffer.c",
+            "src/io.c",
+            "src/auxiliar.c",
+            "src/options.c",
+            "src/inet.c",
+            "src/except.c",
+            "src/select.c",
+            "src/tcp.c",
+            "src/udp.c"
         };
-        "src/usocket.c",
     };
 
-    Cc {
-        settings = {
-            platforms = { "mingw", "msvc" };
+    if platform == "android" or platform == "ios" or platform == "ios_simulator" or platform == "clang" then
+        socket {
+            Cc (architecture) {
+                "src/usocket.c"
+            };
         };
-        "src/wsocket.c",
-    };
-}
+    end
+
+    if platform == "mingw" or platform == "msvc" then
+        socket {
+            Cc (architecture) {
+                "src/wsocket.c"
+            };
+        };
+    end
+end
+
+build.pop_settings();
