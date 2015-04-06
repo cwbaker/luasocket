@@ -13,8 +13,8 @@ local settings = build.push_settings {
 };
 
 for _, architecture in ipairs(settings.architectures) do
-    local socket = Library ("socket", architecture) {
-        Cc (architecture) {
+    local socket = build.Library ("socket", architecture) {
+        build.Cc (architecture) {
             "src/luasocket.c",
             "src/timeout.c",
             "src/buffer.c",
@@ -31,7 +31,7 @@ for _, architecture in ipairs(settings.architectures) do
 
     if platform == "android" or platform == "ios" or platform == "ios_simulator" or platform == "macosx" or platform == "clang" then
         socket {
-            Cc (architecture) {
+            build.Cc (architecture) {
                 "src/usocket.c"
             };
         };
@@ -39,7 +39,7 @@ for _, architecture in ipairs(settings.architectures) do
 
     if platform == "windows" then
         socket {
-            Cc (architecture) {
+            build.Cc (architecture) {
                 "src/wsocket.c"
             };
         };
