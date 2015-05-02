@@ -9,6 +9,7 @@ if operating_system() == "windows" then
 end
 
 local settings = build.push_settings {
+    warning_level = 0;
     defines = defines;
 };
 
