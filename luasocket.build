@@ -1,7 +1,7 @@
 
 local defines = {};
 
-if operating_system() == "windows" then
+if build.operating_system() == "windows" then
     table.insert( defines, "WINVER=0x0501" );
     if toolset == "mingw" then
         table.insert( defines, "LUASOCKET_INET_PTON" );
