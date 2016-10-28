@@ -1,21 +1,21 @@
 
 local defines = {};
 
-if build.operating_system() == "windows" then
+if build:operating_system() == "windows" then
     table.insert( defines, "WINVER=0x0501" );
     if toolset == "mingw" then
         table.insert( defines, "LUASOCKET_INET_PTON" );
     end
 end
 
-local settings = build.push_settings {
+local settings = build:push_settings {
     warning_level = 0;
     defines = defines;
 };
 
 for _, architecture in ipairs(settings.architectures) do
-    local socket = build.Library ("socket", architecture) {
-        build.Cc (architecture) {
+    local socket = build:Library ("socket", architecture) {
+        build:Cc (architecture) {
             "src/luasocket.c",
             "src/timeout.c",
             "src/buffer.c",
@@ -32,7 +32,7 @@ for _, architecture in ipairs(settings.architectures) do
 
     if platform == "android" or platform == "ios" or platform == "ios_simulator" or platform == "macosx" or platform == "clang" then
         socket {
-            build.Cc (architecture) {
+            build:Cc (architecture) {
                 "src/usocket.c"
             };
         };
@@ -40,11 +40,11 @@ for _, architecture in ipairs(settings.architectures) do
 
     if platform == "windows" then
         socket {
-            build.Cc (architecture) {
+            build:Cc (architecture) {
                 "src/wsocket.c"
             };
         };
     end
 end
 
-build.pop_settings();
+build:pop_settings();
