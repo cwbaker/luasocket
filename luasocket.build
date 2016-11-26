@@ -8,7 +8,7 @@ if build:operating_system() == "windows" then
     end
 end
 
-for _, build in build:default_builds() do
+for _, build in build:default_builds("cc_.*") do
     local build = build:configure {
         warning_level = 0;
         defines = defines;
@@ -30,6 +30,7 @@ for _, build in build:default_builds() do
         };
     };
 
+    local platform = build.settings.platform;
     if platform == "android" or platform == "ios" or platform == "ios_simulator" or platform == "macosx" or platform == "clang" then
         socket {
             build:Cc () {
@@ -37,7 +38,6 @@ for _, build in build:default_builds() do
             };
         };
     end
-
     if platform == "windows" then
         socket {
             build:Cc () {
