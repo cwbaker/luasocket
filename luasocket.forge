@@ -1,0 +1,48 @@
+
+local defines = {};
+if forge:platform_matches('windows') then
+    table.insert( defines, 'WINVER=0x0501' );
+    if toolset == 'mingw' then
+        table.insert( defines, 'LUASOCKET_INET_PTON' );
+    end
+end
+
+for _, forge in forge:default_builds("cc_.*") do
+    local forge = forge:configure {
+        warning_level = 0;
+    };
+
+    local socket = forge:StaticLibrary '${lib}/socket_${platform}_${architecture}' {
+        forge:Cc '${obj}/%1' {
+            defines = defines;
+            "src/luasocket.c",
+            "src/timeout.c",
+            "src/buffer.c",
+            "src/io.c",
+            "src/auxiliar.c",
+            "src/options.c",
+            "src/inet.c",
+            "src/except.c",
+            "src/select.c",
+            "src/tcp.c",
+            "src/udp.c"
+        };
+    };
+
+    if forge:platform_matches('android') or forge:platform_matches('ios') or forge:platform_matches('ios_simulator') or forge:platform_matches('macos') then
+        socket {
+            forge:Cc '${obj}/%1' {
+                defines = defines;
+                "src/usocket.c"
+            };
+        };
+    end
+    if forge:platform_matches('windows') then
+        socket {
+            forge:Cc '${obj}/%1' {
+                defines = defines;
+                "src/wsocket.c"
+            };
+        };
+    end
+end
