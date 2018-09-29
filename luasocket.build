@@ -15,7 +15,7 @@ for _, build in build:default_builds("cc_.*") do
     };
 
     local socket = build:Library '${lib}/socket_${platform}_${architecture}' {
-        build:Cc () {
+        build:Cc '${obj}/%1' {
             "src/luasocket.c",
             "src/timeout.c",
             "src/buffer.c",
@@ -33,14 +33,14 @@ for _, build in build:default_builds("cc_.*") do
     local platform = build.settings.platform;
     if platform == "android" or platform == "ios" or platform == "ios_simulator" or platform == "macos" or platform == "clang" then
         socket {
-            build:Cc () {
+            build:Cc '${obj}/%1' {
                 "src/usocket.c"
             };
         };
     end
     if platform == "windows" then
         socket {
-            build:Cc () {
+            build:Cc '${obj}/%1' {
                 "src/wsocket.c"
             };
         };
