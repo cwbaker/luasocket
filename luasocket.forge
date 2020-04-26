@@ -29,19 +29,18 @@ for _, toolset in toolsets('cc.*') do
         };
     };
 
-    if toolset:platform_matches('android') or toolset:platform_matches('ios') or toolset:platform_matches('ios_simulator') or toolset:platform_matches('macos') then
-        socket {
-            toolset:Cc '${obj}/%1' {
-                defines = defines;
-                "src/usocket.c"
-            };
-        };
-    end
     if toolset:platform_matches('windows') then
         socket {
             toolset:Cc '${obj}/%1' {
                 defines = defines;
                 "src/wsocket.c"
+            };
+        };
+    else
+        socket {
+            toolset:Cc '${obj}/%1' {
+                defines = defines;
+                "src/usocket.c"
             };
         };
     end
